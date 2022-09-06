@@ -48,12 +48,17 @@ namespace ToDo
             services.AddControllers().AddFluentValidation(fv=>
             {
                 fv.DisableDataAnnotationsValidation = true;
-                fv.RegisterValidatorsFromAssemblyContaining<Startup>();
+                fv.RegisterValidatorsFromAssemblyContaining<TaskDtoValidator>();
+                fv.RegisterValidatorsFromAssemblyContaining<ToDoListDtoValidator>();
             });
 
             var connectionString = Configuration.GetConnectionString("DefaultConnection");
 
-            services.AddDbContext<ToDoDbContext>(options => options.UseSqlServer(connectionString));
+            services.AddDbContext<ToDoDbContext>(options =>
+            {
+                options.UseSqlServer(connectionString);
+                options.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
+                });
             
             services.AddScoped<ITaskRepository, TaskRepository>();
             services.AddScoped<ITodoListRepository, TodoListRepository>();

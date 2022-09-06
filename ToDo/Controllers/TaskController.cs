@@ -53,14 +53,14 @@ namespace ToDoApp.Controllers
 
         // POST api/<TaskController>
         [HttpPost("{id}")]
-        public async Task<ActionResult> PostTask(int id,[FromBody] TaskDto taskDto)
+        public async Task<ActionResult> PostTask(int toDoListId, [FromBody] TaskDto taskDto)
         {
             var validationResult = _taskDtoValidator.Validate(taskDto);
             if(!validationResult.IsValid)
             {
                 return BadRequest(validationResult);
             }
-            await _taskService.AddAsync(taskDto, id);
+            await _taskService.AddAsync(taskDto, toDoListId);
 
             return CreatedAtAction("PostTask", taskDto);
         }

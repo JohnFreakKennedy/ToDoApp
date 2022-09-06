@@ -5,7 +5,7 @@ namespace ToDoAppBLL.DTO
 {
     public class TaskDto
     {
-        public int TaskId { get; set; }
+        public int? TaskId { get; set; }
         public string Name { get; set; }
         public DateTime? DueDate { get; set; }
         public RepeatType RepeatType { get; set; } = RepeatType.Once;

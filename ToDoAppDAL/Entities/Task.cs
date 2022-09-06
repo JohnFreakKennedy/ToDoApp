@@ -7,7 +7,7 @@ namespace ToDoAppDAL.Entities
 { 
     public class Task:TBaseEntity
     {
-        [Required(ErrorMessage = "Entity id can not be null"),Range(0,Double.PositiveInfinity)]
+        [Key]
         public int TaskId { get; set; }
         [Required,MaxLength(200, ErrorMessage = "Task name can't be longer than 200 symbols")]
         public string Name { get; set; }

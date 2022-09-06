@@ -20,7 +20,21 @@ namespace ToDoAppDAL.Repositories
         }
         public async Task AddAsync(TodoList todoList)
         {
-            await _toDoDbContext.AddAsync(todoList);
+            await _toDoDbContext.Database.OpenConnectionAsync();
+            if(todoList.TodoListId != null && todoList.TodoListId>0)
+                try
+                {
+                    await _toDoDbContext.Database.ExecuteSqlRawAsync("SET IDENTITY_INSERT dbo.TodoLists ON");
+                    await _toDoDbContext.AddAsync(todoList);
+                    await _toDoDbContext.SaveChangesAsync();
+                    await _toDoDbContext.Database.ExecuteSqlRawAsync("SET IDENTITY_INSERT dbo.TodoLists OFF");
+                    return;
+                }
+                finally
+                {
+                    _toDoDbContext.Database.CloseConnection();
+                }
+            await _toDoDbContext.TodoLists.AddAsync(todoList);
             await _toDoDbContext.SaveChangesAsync();
         }
 
@@ -39,7 +53,14 @@ namespace ToDoAppDAL.Repositories
 
         public async Task<TodoList> GetByIdAsync(int toDoListID)
         {
-            return await _toDoDbContext.TodoLists.FirstOrDefaultAsync(x => x.TodoListId == toDoListID);
+            try
+            {
+                return await _toDoDbContext.TodoLists.FirstOrDefaultAsync(x => x.TodoListId == toDoListID);
+            }
+            catch (InvalidCastException ex)
+            {
+                return null;
+            }
         }
 
         public IEnumerable<ETask> GetTasks(int toDoListID)
@@ -50,6 +71,8 @@ namespace ToDoAppDAL.Repositories
 
         public async Task UpdateAsync(TodoList todoList)
         {
+            
+            _toDoDbContext.Update(todoList);
             _toDoDbContext.Entry(todoList).State = EntityState.Modified;
             await _toDoDbContext.SaveChangesAsync();
         }

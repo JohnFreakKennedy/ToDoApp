@@ -17,11 +17,13 @@ namespace ToDoAppDAL
         {
             Database.EnsureCreated();
         }
+
         public DbSet<TodoList> TodoLists { get; set; }
         public DbSet<Task> Tasks { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
+            optionsBuilder.EnableSensitiveDataLogging();
             optionsBuilder.UseSqlServer("Data Source=DANKOVPC;Initial Catalog=ToDoAppDB;Integrated Security=True");
         }
 

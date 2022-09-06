@@ -20,7 +20,7 @@ namespace ToDoAppDAL.Repositories
 
         public async Task AddAsync(ETask task)
         {
-            await _toDoDbContext.AddAsync(task);
+            await _toDoDbContext.Tasks.AddAsync(task);
             await _toDoDbContext.SaveChangesAsync();
         }
 

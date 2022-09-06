@@ -6,9 +6,9 @@ namespace ToDoAppDAL.Enums
 {
     public enum TaskStatus
     {
-        Todo,
-        InProgress,
-        Overdue,
-        Done
+        Todo=1,
+        InProgress=2,
+        Overdue=3,
+        Done=4,
     }
 }

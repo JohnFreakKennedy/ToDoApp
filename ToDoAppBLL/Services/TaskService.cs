@@ -37,7 +37,12 @@ namespace ToDoAppBLL.Services
         }
 
         public async Task AddAsync(TaskDto TaskDto, int toDoListId)
-        { 
+        {
+            if (TaskDto.TaskId == null)
+            {
+                var tasks = await GetAllTasksAsync();
+                TaskDto.TaskId = tasks.Max(t=> t.TaskId) + 1;
+            }
             var taskEntity = _mapper.Map<TaskDto,ETask>(TaskDto);
             taskEntity.TodoListId = toDoListId;
             taskEntity.TodoList = await _unitOfWork.TodoListRepository.GetByIdAsync(TaskDto.TodoListId);

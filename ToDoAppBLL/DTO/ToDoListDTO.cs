@@ -9,7 +9,7 @@ namespace ToDoAppBLL.DTO
 {
     public class ToDoListDto
     {
-            public int TodoListId { get; set; }
+            public int? TodoListId { get; set; }
             public string Title { get; set; }
             public ListStatus Status { get; set; } = ListStatus.Open;
             public ICollection<int> TasksIds { get; set; }

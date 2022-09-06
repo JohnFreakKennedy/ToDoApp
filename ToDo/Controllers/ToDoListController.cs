@@ -29,7 +29,7 @@ namespace ToDoApp.Controllers
             _todoListValidator = validator;
         }
 
-        // GET: api/tasks
+        // GET: api/ToDoList/GetToDoLists
         [HttpGet]
         public async Task<ActionResult> GetToDoLists()
         {
@@ -56,35 +56,35 @@ namespace ToDoApp.Controllers
         {
             if(!ModelState.IsValid)
             {
-
-                return BadRequest();
-            }
-            var validationResult = _todoListValidator.Validate(todoListDto);
-            if (!validationResult.IsValid)
-            {
+                var validationResult = _todoListValidator.Validate(todoListDto);
                 return BadRequest(validationResult);
             }
             await _todoListService.AddAsync(todoListDto);
 
-            return CreatedAtAction("PostToDoList",
-                new { id = todoListDto.TodoListId }, todoListDto);
+            return CreatedAtAction(nameof(GetToDoListById), new { id = todoListDto.TodoListId},todoListDto);
         }
 
-        // PUT api/<TaskController>/5
+        // PUT api/ToDoListController/PutToDoList/id
         [HttpPut("{id}")]
         public async Task<ActionResult> PutToDoList(int id, [FromBody] ToDoListDto toDoListDto)
         {
             var toDoListToUpdate = await _todoListService.GetTodoListByIdAsync(id);
             if (toDoListToUpdate == null)
                 return NotFound($"ToDoList with id {id} doesn't exist/not found");
-            await _todoListService.UpdateAsync(toDoListDto);
-            return NoContent();
+            if (ModelState.IsValid)
+            {
+                await _todoListService.UpdateAsync(toDoListDto);
+                return NoContent();
+            }
+            return BadRequest($" {toDoListDto} Validation failed");
         }
 
         // DELETE api/<TaskController>/5
         [HttpDelete("{id}")]
         public async Task<ActionResult> Delete(int id)
         {
+            if (await _todoListService.GetTodoListByIdAsync(id) == null)
+                return NotFound($"ToDoList with id {id} doesn't exist/not found");
             await _todoListService.DeleteByIdAsync(id);
             return Ok();
         }
